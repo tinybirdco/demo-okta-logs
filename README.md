@@ -1,4 +1,4 @@
-# Oort Demo
+# Okta Logs Stream Demo
 Quick demo to identify parallel sessions in different locations from Okta Logs stream.
 
 ## Working with the Tinybird CLI
