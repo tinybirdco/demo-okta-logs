@@ -91,7 +91,7 @@ You will see a response similar to this:
 
 ## Clean the Workspace
 
-If you want to delete all pipes and dataspurces, be sure you have them in your local folder `tb pull` and run `tb workspace clear`
+If you want to delete all pipes and datasources, be sure you have them in your local folder `tb pull` and run `tb workspace clear`
 
 ```bash
 $ tb workspace clear
