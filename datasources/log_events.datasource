@@ -1,0 +1,17 @@
+
+SCHEMA >
+    `actor_alternateId` String `json:$.actor.alternateId`,
+    `actor_id` String `json:$.actor.id`,
+    `actor_type` String `json:$.actor.type`,
+    `client_geographicalContext_postalCode` String `json:$.client.geographicalContext.postalCode`,
+    `eventType` String `json:$.eventType`,
+    `published` DateTime64(3) `json:$.published`,
+    `severity` String `json:$.severity`,
+    `uuid` String `json:$.uuid`,
+    `version` String `json:$.version`
+
+ENGINE "MergeTree"
+ENGINE_PARTITION_KEY "toYear(published)"
+ENGINE_SORTING_KEY "published, severity, uuid, version"
+
+

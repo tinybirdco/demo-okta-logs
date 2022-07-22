@@ -1,0 +1,59 @@
+DESCRIPTION >
+	- This pipe returns alerts for parallel sessions in different locations
+- Parallel sessions occur when one actor logs an event in the same minute in different zip codes
+
+
+NODE filter_date
+DESCRIPTION >
+    This node filters events in a one-hour interval based on the time_end parameter
+
+SQL >
+
+    %
+    SELECT
+        toStartOfMinute(published) as published_minute,
+        actor_id,
+        actor_alternateId as actor_email,
+        client_geographicalContext_postalCode postal_code
+    FROM log_events
+    WHERE published_minute BETWEEN
+        toDateTime({{DateTime(time_end, '2022-07-22 14:30:00', description="End of the hour range", required=True)}}) - INTERVAL 1 HOUR
+        AND toDateTime({{DateTime(time_end, '2022-07-22 14:30:00', description="End of the hour range", required=True)}})
+
+
+
+NODE agg_sessions
+DESCRIPTION >
+    This node aggregates the number of postal codes in each actor's session (i.e. each minute)
+
+SQL >
+
+    SELECT
+        published_minute,
+        actor_email,
+        count(distinct postal_code) as cnt_postal_code,
+        groupArray(postal_code) as postal_codes
+    FROM filter_date
+    GROUP BY
+        published_minute,
+        actor_email
+
+
+
+NODE endpoint
+DESCRIPTION >
+    This node outputs the actors that have multiple sessions in different locations
+
+SQL >
+
+    SELECT
+        published_minute,
+        actor_email,
+        postal_codes
+    FROM agg_sessions
+    WHERE
+        cnt_postal_code > 1
+    ORDER BY
+        published_minute
+
+
